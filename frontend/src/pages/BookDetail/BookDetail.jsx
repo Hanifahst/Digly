@@ -1,10 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import books from "../../data/books";
 import Navbar from "../../components/layout/Navbar/Navbar";
+import { useBorrow } from "../../context/BorrowContext";
 
 function BookDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const { borrowBook, isBorrowed } = useBorrow();
 
   const book = books.find((b) => b.id === Number(id));
 
@@ -15,6 +19,10 @@ function BookDetail() {
       </div>
     );
   }
+
+  const handleBorrow = () => {
+  setBorrowed(true);
+};
 
   return (
     <>
@@ -63,6 +71,18 @@ function BookDetail() {
                     {book.pages} pages
                 </span>
             </div>
+
+            <button
+                onClick={() => borrowBook(book)}
+                disabled={isBorrowed(book.id)}
+                className={`mt-8 rounded-full px-5 py-2 text-white transition ${
+                    isBorrowed(book.id)
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-[#6B4F3A] hover:bg-[#5A4230]"
+                }`}
+            >
+                {isBorrowed(book.id) ? "Already Borrowed" : "Borrow Book"}
+            </button>
 
           </div>
 
