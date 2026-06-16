@@ -4,6 +4,7 @@ import Books from "./pages/member/Books/Books";
 import BookDetail from "./pages/BookDetail/BookDetail";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import History from "./pages/member/History/History";
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/books" element={<Books />} />
       <Route path="/books/:id" element={<BookDetail />} />
-      <Route path="/history" element={<div className="p-10">History Page (coming soon)</div>} />
+      <Route path="/history" element={<History />} />
       <Route path="/profile" element={<div className="p-10">Profile Page (coming soon)</div>} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
