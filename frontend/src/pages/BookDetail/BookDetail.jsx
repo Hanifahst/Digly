@@ -10,7 +10,7 @@ function BookDetail() {
 
   const { borrowBook, isBorrowed } = useBorrow();
 
-  const book = books.find((b) => b.id === Number(id));
+  const book = books.find((b) => String (b.id) === String(id));
 
   if (!book) {
     return (
@@ -19,10 +19,6 @@ function BookDetail() {
       </div>
     );
   }
-
-  const handleBorrow = () => {
-  setBorrowed(true);
-};
 
   return (
     <>

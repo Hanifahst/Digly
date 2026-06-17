@@ -2,9 +2,11 @@ import { useState } from "react";
 import Navbar from "../../../components/layout/Navbar/Navbar";
 import BookCard from "../../../components/books/BookCard/BookCard";
 import books from "../../../data/books";
+import { useBorrow } from "../../../context/BorrowContext";
 
 function Books() {
   const [searchQuery, setSearchQuery] = useState("");
+const { borrowBook, isBorrowed } = useBorrow(); 
 
   const filteredBooks = books.filter((book) => {
     return (
@@ -46,18 +48,19 @@ function Books() {
             />
           </div>
 
-          {/* BOOK GRID */}
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {filteredBooks.map((book) => (
-              <BookCard
-                key={book.id}
-                id={book.id}
-                title={book.title}
-                author={book.author}
-                category={book.category}
-              />
-            ))}
-          </div>
+                <div key={book.id} className="relative">
+
+                    <BookCard
+                        id={book.id}
+                        title={book.title}
+                        author={book.author}
+                        category={book.category}
+                    />
+            </div>
+        ))}
+    </div>
 
         </div>
       </main>

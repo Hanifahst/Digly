@@ -34,6 +34,7 @@ function History() {
               {borrowedBooks.map((book) => (
                 <div key={book.id}>
                   <BookCard
+                    id={book.id}
                     title={book.title}
                     author={book.author}
                     category={book.category}
