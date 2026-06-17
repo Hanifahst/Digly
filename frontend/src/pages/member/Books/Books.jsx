@@ -6,7 +6,6 @@ import { useBorrow } from "../../../context/BorrowContext";
 
 function Books() {
   const [searchQuery, setSearchQuery] = useState("");
-const { borrowBook, isBorrowed } = useBorrow(); 
 
   const filteredBooks = books.filter((book) => {
     return (
