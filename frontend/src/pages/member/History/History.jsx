@@ -42,7 +42,7 @@ function History() {
 
                   <button
                     onClick={() => returnBook(book.id)}
-                    className="mt-3 w-full rounded-full bg-red-500 py-2 text-white hover:bg-red-600"
+                    className="mt-3 w-full rounded-full bg-[#6B4F3A] py-2 text-white transition hover:bg-[#5A4230]"
                   >
                     Return Book
                   </button>

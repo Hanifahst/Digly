@@ -27,7 +27,6 @@ function BookDetail() {
       <main className="min-h-screen bg-[#F8F5F0]">
         <div className="mx-auto max-w-4xl px-6 py-16">
 
-          {/* BACK BUTTON */}
           <button
             onClick={() => navigate(-1)}
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#D8CDBF] bg-[#FFFDF9] px-5 py-2.5 text-sm font-medium text-[#6B4F3A] shadow-sm transition hover:bg-[#6B4F3A] hover:text-white hover:shadow-md"
@@ -35,7 +34,6 @@ function BookDetail() {
             ← Back
           </button>
 
-          {/* BOOK CONTENT */}
           <div className="rounded-3xl border border-[#E7DDD0] bg-[#FFFDF9] p-10">
 
             <span className="text-sm uppercase tracking-[0.2em] text-[#8B6F47]">

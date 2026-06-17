@@ -6,13 +6,12 @@ function BookCard({ id, title, author, category }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-[#E7DDD0] bg-[#FFFDF9] transition hover:-translate-y-1 hover:shadow-lg">
 
-      {/* CARD CLICK AREA */}
       <div
         onClick={() => navigate(`/books/${id}`)}
         className="cursor-pointer"
       >
         <div className="flex h-64 items-center justify-center bg-[#EFE7DC]">
-          <div className="flex h-44 w-32 items-center justify-center rounded-md border border-[#D8CDBF] bg-[#F8F5F0] text-[#8B6F47]">
+          <div className="flex h-44 w-32 items-center justify-center rounded-md border border-[#D8CDBF] bg-[#F8F5F0] text-[#8B6F47] transition hover:scale-105">
             Book Cover
           </div>
         </div>
@@ -30,7 +29,6 @@ function BookCard({ id, title, author, category }) {
         </div>
       </div>
 
-      {/* BUTTON */}
       <div className="px-5 pb-5">
         <button
           onClick={() => navigate(`/books/${id}`)}

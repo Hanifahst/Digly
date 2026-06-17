@@ -20,19 +20,19 @@ function Register() {
           <input
             type="text"
             placeholder="Full Name"
-            className="w-full rounded-full border border-[#D8CDBF] px-4 py-3 outline-none"
+            className="w-full rounded-full border border-[#D8CDBF] px-4 py-3 outline-none focus:border-[#8B6F47]"
           />
 
           <input
             type="email"
             placeholder="Email"
-            className="w-full rounded-full border border-[#D8CDBF] px-4 py-3 outline-none"
+            className="w-full rounded-full border border-[#D8CDBF] px-4 py-3 outline-none focus:border-[#8B6F47]"
           />
 
           <input
             type="password"
             placeholder="Password"
-            className="w-full rounded-full border border-[#D8CDBF] px-4 py-3 outline-none"
+            className="w-full rounded-full border border-[#D8CDBF] px-4 py-3 outline-none focus:border-[#8B6F47]"
           />
 
           <button

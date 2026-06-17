@@ -4,15 +4,12 @@ import BookCard from "../../components/books/BookCard/BookCard";
 import books from "../../data/books";
 
 function Home() {
-  // STATE
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // STATIC SECTION DATA
   const featuredBooks = books.slice(0, 4);
   const recentBooks = [...books].slice().reverse().slice(0, 4);
 
-  // SEARCH RESULT
   const searchResults = books.filter((book) => {
     const matchCategory =
       selectedCategory === "All" || book.category === selectedCategory;
@@ -35,7 +32,6 @@ function Home() {
       <main className="min-h-screen bg-[#F8F5F0]">
         <div className="mx-auto max-w-7xl px-6 py-10">
 
-          {/* HERO */}
           <section className="rounded-3xl border border-[#E7DDD0] bg-[#FFFDF9] p-8 md:p-12">
             <span className="text-sm uppercase tracking-[0.2em] text-[#8B6F47]">
               Digital Library
@@ -53,7 +49,6 @@ function Home() {
               expand knowledge, and enjoy reading anytime, anywhere.
             </p>
 
-            {/* SEARCH */}
             <div className="mt-8 flex flex-col gap-3 md:flex-row">
               <input
                 type="text"
@@ -62,14 +57,9 @@ function Home() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 rounded-full border border-[#D8CDBF] bg-white px-6 py-3 outline-none transition focus:border-[#8B6F47]"
               />
-
-              <button className="rounded-full bg-[#6B4F3A] px-8 py-3 font-medium text-white transition hover:bg-[#5A4230]">
-                Search
-              </button>
             </div>
           </section>
 
-          {/* SEARCH RESULTS SECTION */}
           {isSearching && (
             <section className="mt-16">
               <h2
@@ -103,7 +93,6 @@ function Home() {
             </section>
           )}
 
-          {/* FEATURED */}
           <section className="mt-16">
             <div className="mb-8">
               <h2
@@ -131,7 +120,6 @@ function Home() {
             </div>
           </section>
 
-          {/* RECENTLY ADDED */}
           <section className="mt-20 pb-12">
             <div className="mb-8">
               <h2

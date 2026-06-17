@@ -2,7 +2,6 @@ import { useState } from "react";
 import Navbar from "../../../components/layout/Navbar/Navbar";
 import BookCard from "../../../components/books/BookCard/BookCard";
 import books from "../../../data/books";
-import { useBorrow } from "../../../context/BorrowContext";
 
 function Books() {
   const [searchQuery, setSearchQuery] = useState("");
