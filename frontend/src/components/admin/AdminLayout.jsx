@@ -2,26 +2,12 @@ import Sidebar from "./Sidebar";
 
 export default function AdminLayout({ children }) {
   return (
-    <div style={styles.container}>
+    <div className="min-h-screen bg-[#F8F5F0] flex">
       <Sidebar />
 
-      <div style={styles.content}>
+      <main className="ml-[240px] w-full p-8">
         {children}
-      </div>
+      </main>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-  },
-
-  content: {
-    marginLeft: "220px",
-    padding: "20px",
-    width: "100%",
-    background: "#f4f6f9",
-    minHeight: "100vh"
-  }
-};

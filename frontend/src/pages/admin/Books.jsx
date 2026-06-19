@@ -3,109 +3,45 @@ import AdminLayout from "../../components/admin/AdminLayout";
 export default function Books() {
   return (
     <AdminLayout>
-      <div style={styles.header}>
-        <h1>Kelola Buku</h1>
+      <h1 className="text-5xl text-[#3E2F26] mb-2"
+        style={{ fontFamily: '"Cormorant Garamond", serif' }}
+      >
+        Books Management
+      </h1>
 
-        <div style={styles.actions}>
-          <input
-            placeholder="Cari buku..."
-            style={styles.search}
-          />
+      <p className="text-[#6B5B4D] mb-6">
+        Manage library book collection
+      </p>
 
-          <button style={styles.addBtn}>+ Tambah Buku</button>
-        </div>
+      <div className="flex justify-between mb-6">
+        <input
+          placeholder="Search books..."
+          className="px-5 py-3 rounded-full border border-[#D8CDBF] bg-white w-[420px] outline-none"
+        />
+
+        <button className="bg-[#6B4F3A] text-white px-6 py-3 rounded-full">
+          + Add Book
+        </button>
       </div>
 
-      <table style={styles.table}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Judul</th>
-            <th>Penulis</th>
-            <th>Stok</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
+      <div className="bg-[#FFFDF9] border border-[#E7DDD0] rounded-2xl p-6">
+        <div className="grid grid-cols-4 font-semibold text-[#3E2F26] mb-4">
+          <span>Title</span>
+          <span>Author</span>
+          <span>Stock</span>
+          <span>Action</span>
+        </div>
 
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Laskar Pelangi</td>
-            <td>Andrea Hirata</td>
-            <td>5</td>
-            <td>
-              <button style={styles.edit}>Edit</button>
-              <button style={styles.delete}>Hapus</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>2</td>
-            <td>Bumi Manusia</td>
-            <td>Pramoedya</td>
-            <td>3</td>
-            <td>
-              <button style={styles.edit}>Edit</button>
-              <button style={styles.delete}>Hapus</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <div className="grid grid-cols-4 py-3 text-[#6B5B4D] border-t border-[#F2EBE1]">
+          <span>Laskar Pelangi</span>
+          <span>Andrea Hirata</span>
+          <span>5</span>
+          <span className="space-x-3">
+            <button className="text-[#8B6F47]">Edit</button>
+            <button className="text-[#B45309]">Delete</button>
+          </span>
+        </div>
+      </div>
     </AdminLayout>
   );
 }
-
-const styles = {
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "20px"
-  },
-
-  actions: {
-    display: "flex",
-    gap: "10px",
-    alignItems: "center"
-  },
-
-  search: {
-    padding: "8px",
-    borderRadius: "6px",
-    border: "1px solid #ddd"
-  },
-
-  addBtn: {
-    background: "#2563eb",
-    color: "white",
-    border: "none",
-    padding: "8px 12px",
-    borderRadius: "6px",
-    cursor: "pointer"
-  },
-
-  table: {
-    width: "100%",
-    background: "white",
-    borderCollapse: "collapse",
-    borderRadius: "10px",
-    overflow: "hidden"
-  },
-
-  edit: {
-    background: "#3b82f6",
-    color: "white",
-    border: "none",
-    marginRight: "5px",
-    padding: "5px 10px",
-    borderRadius: "5px"
-  },
-
-  delete: {
-    background: "#ef4444",
-    color: "white",
-    border: "none",
-    padding: "5px 10px",
-    borderRadius: "5px"
-  }
-};

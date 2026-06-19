@@ -3,17 +3,20 @@ import AdminLayout from "../../components/admin/AdminLayout";
 export default function Dashboard() {
   return (
     <AdminLayout>
-      <h1>Dashboard Admin</h1>
+      <h1 className="text-5xl text-[#3E2F26] mb-2"
+        style={{ fontFamily: '"Cormorant Garamond", serif' }}
+      >
+        Dashboard
+      </h1>
 
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        gap: "15px",
-        marginTop: "20px"
-      }}>
-        <Card title="Total Buku" value="120" />
-        <Card title="Total User" value="45" />
-        <Card title="Peminjaman Aktif" value="18" />
+      <p className="text-[#6B5B4D] mb-8">
+        Overview of Digly library system
+      </p>
+
+      <div className="grid grid-cols-3 gap-6">
+        <Card title="Total Books" value="120" />
+        <Card title="Total Users" value="45" />
+        <Card title="Active Loans" value="18" />
       </div>
     </AdminLayout>
   );
@@ -21,14 +24,9 @@ export default function Dashboard() {
 
 function Card({ title, value }) {
   return (
-    <div style={{
-      background: "white",
-      padding: "20px",
-      borderRadius: "10px",
-      boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
-    }}>
-      <h4>{title}</h4>
-      <h2>{value}</h2>
+    <div className="bg-[#FFFDF9] border border-[#E7DDD0] rounded-2xl p-6">
+      <p className="text-[#6B5B4D]">{title}</p>
+      <h2 className="text-3xl text-[#3E2F26] mt-2">{value}</h2>
     </div>
   );
 }
