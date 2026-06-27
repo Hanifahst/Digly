@@ -1,16 +1,76 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import books from "../../data/books";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Navbar from "../../components/layout/Navbar/Navbar";
-import { useBorrow } from "../../context/BorrowContext";
 
-function BookDetail() {
-  const { id } = useParams();
+function BookDetail({ isLoggedIn }) {
+  const { id } = useParams(); // Ini berisi parameter dari URL (bisa berupa ISBN string atau ID)
   const navigate = useNavigate();
+  const [book, setBook] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isBorrowing, setIsBorrowing] = useState(false);
+  const [hasBorrowed, setHasBorrowed] = useState(false);
 
-  const { borrowBook, isBorrowed } = useBorrow();
+  // Fungsi untuk memuat ulang detail buku (Dibuat terpisah agar bisa dipanggil kembali)
+  const fetchBookDetail = async () => {
+    try {
+      // Menggunakan id/isbn asli dari useParams agar konsisten
+      const response = await axios.get(`http://localhost:5000/api/books/${id}?t=${Date.now()}`);
+      setBook(response.data);
+    } catch (err) {
+      console.error("Gagal mengambil deskripsi:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const book = books.find((b) => String (b.id) === String(id));
+  useEffect(() => {
+    setLoading(true);
+    fetchBookDetail();
+  }, [id]);
+
+  const handleBorrowClick = async () => {
+    if (!isLoggedIn) {
+      alert("Anda harus masuk akun (Sign In) terlebih dahulu untuk meminjam buku!");
+      navigate("/login");
+      return;
+    }
+
+    setIsBorrowing(true);
+    try {
+      const token = localStorage.getItem("digly_token");
+      
+      // Mengirimkan ISBN yang murni dari URL/state buku untuk diolah oleh memberController baru kita
+      const targetIsbn = book?.isbn || id;
+
+      const response = await axios.post(
+        "http://localhost:5000/api/member/borrow",
+        { book_id: targetIsbn },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert(response.data.message || "Buku berhasil dipinjam!");
+      setHasBorrowed(true);
+
+      // Memanggil fungsi fetch ulang dari API dibanding hanya memotong state, 
+      // agar data di layar sinkron sempurna dengan database MySQL
+      await fetchBookDetail();
+
+    } catch (err) {
+      console.error("Detail Eror Axios:", err.response);
+      alert(err.response?.data?.message || "Gagal memproses peminjaman buku.");
+    } finally {
+      setIsBorrowing(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="p-10 text-center text-[#6B5B4D]">Loading...</div>;
+  }
 
   if (!book) {
     return (
@@ -22,7 +82,7 @@ function BookDetail() {
 
   return (
     <>
-      <Navbar />
+      <Navbar isLoggedIn={isLoggedIn} />
 
       <main className="min-h-screen bg-[#F8F5F0]">
         <div className="mx-auto max-w-4xl px-6 py-16">
@@ -51,33 +111,49 @@ function BookDetail() {
               by {book.author}
             </p>
 
-            <div className="mt-10 h-72 rounded-2xl border border-[#D8CDBF] bg-[#EFE7DC]" />
+            <div className="mt-10 flex h-80 w-56 items-center justify-center overflow-hidden rounded-2xl border border-[#D8CDBF] bg-[#EFE7DC] shadow-md">
+              {book.cover_image ? (
+                <img src={book.cover_image} alt={book.title} className="h-full w-full object-cover" />
+              ) : (
+                <span className="text-[#8B6F47]">No Cover</span>
+              )}
+            </div>
 
             <p className="mt-6 leading-7 text-[#6B5B4D]">
-                {book.description}
+              {book.description}
             </p>
-            
+
             <div className="mt-6 flex flex-wrap gap-4 text-sm text-[#6B5B4D]">
-                <span className="rounded-full bg-[#F3ECE2] px-3 py-1">
-                    {book.year}
-                </span>
-                <span className="rounded-full bg-[#F3ECE2] px-3 py-1">
-                    {book.pages} pages
-                </span>
+              <span className="rounded-full bg-[#F3ECE2] px-3 py-1">
+                {book.year}
+              </span>
+              <span className="rounded-full bg-[#F3ECE2] px-3 py-1">
+                {book.pages} pages
+              </span>
+              <span className={`rounded-full px-3 py-1 font-medium ${book.stock > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                {book.stock > 0 ? `Stock: ${book.stock} available` : "Out of Stock"}
+              </span>
             </div>
 
             <button
-                onClick={() => borrowBook(book)}
-                disabled={isBorrowed(book.id)}
-                className={`mt-8 rounded-full px-5 py-2 text-white transition ${
-                    isBorrowed(book.id)
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-[#6B4F3A] hover:bg-[#5A4230]"
+              onClick={handleBorrowClick}
+              disabled={isBorrowing || (isLoggedIn && (hasBorrowed || book.stock <= 0))}
+              className={`mt-8 rounded-full px-5 py-2 text-white transition ${isBorrowing || (isLoggedIn && (hasBorrowed || book.stock <= 0))
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#6B4F3A] hover:bg-[#5A4230]"
                 }`}
             >
-                {isBorrowed(book.id) ? "Already Borrowed" : "Borrow Book"}
+              {isBorrowing
+                ? "Processing..."
+                : !isLoggedIn
+                  ? "Borrow Book"
+                  : hasBorrowed
+                    ? "Already Borrowed"
+                    : book.stock <= 0
+                      ? "Out of Stock"
+                      : "Borrow Book"
+              }
             </button>
-
           </div>
 
         </div>

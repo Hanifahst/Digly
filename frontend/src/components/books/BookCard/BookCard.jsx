@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-function BookCard({ id, title, author, category }) {
+function BookCard({ id, title, author, category, cover_image, stock }) {
   const navigate = useNavigate();
 
   return (
@@ -11,17 +11,31 @@ function BookCard({ id, title, author, category }) {
         className="cursor-pointer"
       >
         <div className="flex h-64 items-center justify-center bg-[#EFE7DC]">
-          <div className="flex h-44 w-32 items-center justify-center rounded-md border border-[#D8CDBF] bg-[#F8F5F0] text-[#8B6F47] transition hover:scale-105">
-            Book Cover
-          </div>
+          {cover_image ? (
+            <img
+              src={cover_image}
+              alt={title}
+              className="h-44 w-32 rounded-md border border-[#D8CDBF] object-cover transition hover:scale-105 shadow-sm"
+            />
+          ) : (
+            <div className="flex h-44 w-32 items-center justify-center rounded-md border border-[#D8CDBF] bg-[#F8F5F0] text-[#8B6F47] transition hover:scale-105">
+              Book Cover
+            </div>
+          )}
         </div>
 
         <div className="p-5">
-          <span className="rounded-full bg-[#F3ECE2] px-3 py-1 text-xs text-[#6B4F3A]">
-            {category}
-          </span>
+          <div className="flex items-center justify-between">
+            <span className="rounded-full bg-[#F3ECE2] px-3 py-1 text-xs text-[#6B4F3A]">
+              {category}
+            </span>
+            
+            <span className={`text-xs font-semibold ${stock > 0 ? "text-green-600" : "text-red-500"}`}>
+              {stock > 0 ? `Stok: ${stock}` : "Habis"}
+            </span>
+          </div>
 
-          <h3 className="mt-4 text-lg font-semibold text-[#3E2F26]">
+          <h3 className="mt-4 text-lg font-semibold text-[#3E2F26] line-clamp-1">
             {title}
           </h3>
 

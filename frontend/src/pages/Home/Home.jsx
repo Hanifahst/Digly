@@ -1,14 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 import Navbar from "../../components/layout/Navbar/Navbar";
 import BookCard from "../../components/books/BookCard/BookCard";
-import books from "../../data/books";
 
-function Home() {
+function Home({ isLoggedIn, user, setIsLoggedIn, setUser }) {
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const location = useLocation();
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/books?t=${Date.now()}`);
+        setBooks(response.data);
+      } catch (error) {
+        console.error("Gagal mengambil data buku:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBooks();
+  }, [location]);
 
   const featuredBooks = books.slice(0, 4);
-  const recentBooks = [...books].slice().reverse().slice(0, 4);
+  const recentBooks = [...books].reverse().slice(0, 4);
 
   const searchResults = books.filter((book) => {
     const matchCategory =
@@ -25,9 +44,22 @@ function Home() {
   const isSearching = searchQuery.trim() !== "";
   const isEmptySearch = searchResults.length === 0;
 
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F8F5F0] text-[#6B5B4D]">
+        Loading Books Catalog...
+      </div>
+    );
+  }
+
   return (
     <>
-      <Navbar />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        user={user}
+        setIsLoggedIn={setIsLoggedIn}
+        setUser={setUser}
+      />
 
       <main className="min-h-screen bg-[#F8F5F0]">
         <div className="mx-auto max-w-7xl px-6 py-10">
@@ -60,6 +92,7 @@ function Home() {
             </div>
           </section>
 
+
           {isSearching && (
             <section className="mt-16">
               <h2
@@ -75,9 +108,7 @@ function Home() {
 
               <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {isEmptySearch ? (
-                  <p className="text-[#6B5B4D]">
-                    No books found.
-                  </p>
+                  <p className="text-[#6B5B4D]">No books found.</p>
                 ) : (
                   searchResults.map((book) => (
                     <BookCard
@@ -86,12 +117,15 @@ function Home() {
                       title={book.title}
                       author={book.author}
                       category={book.category}
+                      cover_image={book.cover_image}
+                      stock={book.stock}
                     />
                   ))
                 )}
               </div>
             </section>
           )}
+
 
           <section className="mt-16">
             <div className="mb-8">
@@ -110,15 +144,18 @@ function Home() {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {featuredBooks.map((book) => (
                 <BookCard
-                  key={book.id}
+                  key={`featured-${book.id}`}
                   id={book.id}
                   title={book.title}
                   author={book.author}
                   category={book.category}
+                  cover_image={book.cover_image}
+                  stock={book.stock}
                 />
               ))}
             </div>
           </section>
+
 
           <section className="mt-20 pb-12">
             <div className="mb-8">
@@ -142,6 +179,8 @@ function Home() {
                   title={book.title}
                   author={book.author}
                   category={book.category}
+                  cover_image={book.cover_image}
+                  stock={book.stock}
                 />
               ))}
             </div>
