@@ -11,7 +11,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import KelolaBooks from "./pages/admin/Books";
 import Users from "./pages/admin/Users";
 import Loans from "./pages/admin/Loans";
-import Footer from "./components/layout/Footer/Footer"; 
+import Footer from "./components/layout/Footer/Footer";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,40 +42,36 @@ function App() {
 
   return (
     <Routes>
-      <Route 
-        path="/" 
+      <Route
+        path="/"
         element={
           <MemberLayoutWrapper>
             <Home isLoggedIn={isLoggedIn} user={user} setIsLoggedIn={setIsLoggedIn} setUser={setUser} />
           </MemberLayoutWrapper>
-        } 
+        }
       />
-      <Route 
-        path="/books" 
+      <Route
+        path="/books"
         element={
           <MemberLayoutWrapper>
             <Books isLoggedIn={isLoggedIn} user={user} />
           </MemberLayoutWrapper>
-        } 
+        }
       />
-      <Route 
-        path="/books/:id" 
+      <Route
+        path="/books/:id"
         element={
           <MemberLayoutWrapper>
             <BookDetail isLoggedIn={isLoggedIn} />
           </MemberLayoutWrapper>
-        } 
+        }
       />
       <Route
         path="/profile"
         element={
-          isLoggedIn ? (
-            <MemberLayoutWrapper>
-              <Profile isLoggedIn={isLoggedIn} user={user} setIsLoggedIn={setIsLoggedIn} setUser={setUser} />
-            </MemberLayoutWrapper>
-          ) : (
-            <Navigate to="/login" />
-          )
+          <MemberLayoutWrapper>
+            <Profile isLoggedIn={isLoggedIn} user={user} setIsLoggedIn={setIsLoggedIn} setUser={setUser} />
+          </MemberLayoutWrapper>
         }
       />
       <Route
@@ -94,21 +90,21 @@ function App() {
       <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUser={setUser} />} />
       <Route path="/register" element={<Register />} />
 
-      <Route 
-        path="/admin/dashboard" 
-        element={isLoggedIn && user?.role === "admin" ? <Dashboard user={user} /> : <Navigate to="/" />} 
+      <Route
+        path="/admin/dashboard"
+        element={isLoggedIn && user?.role === "admin" ? <Dashboard user={user} /> : <Navigate to="/" />}
       />
-      <Route 
-        path="/admin/books" 
-        element={isLoggedIn && user?.role === "admin" ? <KelolaBooks user={user} /> : <Navigate to="/" />} 
+      <Route
+        path="/admin/books"
+        element={isLoggedIn && user?.role === "admin" ? <KelolaBooks user={user} /> : <Navigate to="/" />}
       />
-      <Route 
-        path="/admin/users" 
-        element={isLoggedIn && user?.role === "admin" ? <Users user={user} /> : <Navigate to="/" />} 
+      <Route
+        path="/admin/users"
+        element={isLoggedIn && user?.role === "admin" ? <Users user={user} /> : <Navigate to="/" />}
       />
-      <Route 
-        path="/admin/loans" 
-        element={isLoggedIn && user?.role === "admin" ? <Loans user={user} /> : <Navigate to="/" />} 
+      <Route
+        path="/admin/loans"
+        element={isLoggedIn && user?.role === "admin" ? <Loans user={user} /> : <Navigate to="/" />}
       />
 
       <Route path="*" element={<Navigate to="/" />} />

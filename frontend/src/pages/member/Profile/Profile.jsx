@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react"; 
-import axios from "axios"; 
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Navbar from "../../../components/layout/Navbar/Navbar";
 
 function Profile({ isLoggedIn, user, setIsLoggedIn, setUser }) {
   const navigate = useNavigate();
-  const [totalDipinjam, setTotalDipinjam] = useState(0); 
+  const [totalDipinjam, setTotalDipinjam] = useState(0);
 
   useEffect(() => {
     const fetchTotalBorrowed = async () => {
@@ -15,7 +15,7 @@ function Profile({ isLoggedIn, user, setIsLoggedIn, setUser }) {
           const response = await axios.get("https://digly-project.sevalla.app/api/member/history", {
             headers: { Authorization: `Bearer ${token}` }
           });
-          
+
           const bukuAktif = response.data.filter(item => item.status === "borrowed");
           setTotalDipinjam(bukuAktif.length);
         } catch (err) {
@@ -28,14 +28,14 @@ function Profile({ isLoggedIn, user, setIsLoggedIn, setUser }) {
   }, [isLoggedIn]);
 
   const handleSignOut = () => {
+    localStorage.removeItem("digly_user");
+    localStorage.removeItem("digly_token");
+
+    setUser(null);
+    setIsLoggedIn(false);
+
     navigate("/");
-    
-    setTimeout(() => {
-      localStorage.removeItem("digly_user");
-      localStorage.removeItem("digly_token");
-      setUser(null);
-      setIsLoggedIn(false);
-    }, 50);
+
   };
 
   const dapatkanInisial = (nama) => {
@@ -98,7 +98,7 @@ function Profile({ isLoggedIn, user, setIsLoggedIn, setUser }) {
               <div className="mt-10 grid gap-6 md:grid-cols-2">
                 <div className="rounded-2xl bg-[#F8F5F0] p-6">
                   <p className="text-sm uppercase tracking-wider text-[#8B6F47]">Borrowed Books</p>
-                  <h3 className="mt-2 text-4xl font-semibold text-[#3E2F26]">{totalDipinjam}</h3> 
+                  <h3 className="mt-2 text-4xl font-semibold text-[#3E2F26]">{totalDipinjam}</h3>
                 </div>
                 <div className="rounded-2xl bg-[#F8F5F0] p-6">
                   <p className="text-sm uppercase tracking-wider text-[#8B6F47]">Account Status</p>
