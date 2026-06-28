@@ -3,6 +3,7 @@ require("./config/mongodb");
 
 const express = require("express");
 const cors = require("cors");
+const PORT = process.env.PORT || 5000;
 
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes"); 
@@ -22,7 +23,6 @@ app.use("/api/admin", adminRoutes);
 app.use('/api/books', bookRoutes);
 app.use("/api/member", memberRoutes); 
 
-
-app.listen(5000, () => {
-    console.log("🚀 Server Digly Library Running di port 5000 dengan Rute Admin Aktif!");
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server backend berjalan lancar di port ${PORT}`);
 });
