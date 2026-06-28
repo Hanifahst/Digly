@@ -143,10 +143,6 @@ if (isbn === "9793062797") return 4;
 return 2;
 };
 
-const express = require('express');
-const router = express.Router();
-const axios = require('axios');
-const db = require("../config/mysql"); 
 
 const bagiMenjadiPotongan = (array, ukuran) => {
     const hasil = [];
