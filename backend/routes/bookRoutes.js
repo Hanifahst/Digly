@@ -143,6 +143,11 @@ if (isbn === "9793062797") return 4;
 return 2;
 };
 
+const express = require('express');
+const router = express.Router();
+const axios = require('axios');
+const db = require("../config/mysql"); 
+
 const bagiMenjadiPotongan = (array, ukuran) => {
     const hasil = [];
     for (let i = 0; i < array.length; i += ukuran) {
@@ -151,113 +156,88 @@ const bagiMenjadiPotongan = (array, ukuran) => {
     return hasil;
 };
 
-
 router.get('/', async (req, res) => {
     try {
         const queryStr = "SELECT * FROM books";
         
-        db.query(queryStr, async (err, dbBooks) => {
-            if (err) {
-                console.error("Gagal mengambil data dari MySQL:", err);
-                return res.status(500).json({ message: "Database Error" });
-            }
+        const [dbBooks] = await db.query(queryStr);
 
-            const listIsbnDariDb = dbBooks.map(b => b.isbn);
-            const kelompokIsbn = bagiMenjadiPotongan(listIsbnDariDb, 10);
-            let dataMerged = {};
+        const listIsbnDariDb = dbBooks.map(b => b.isbn);
+        const kelompokIsbn = bagiMenjadiPotongan(listIsbnDariDb, 10);
+        let dataMerged = {};
 
-            const semuaRequest = kelompokIsbn.map(kelompok => {
-                const parameterBibkeys = kelompok.map(isbn => `ISBN:${isbn}`).join(',');
-                return axios.get(`https://openlibrary.org/api/books?bibkeys=${parameterBibkeys}&format=json&jscmd=data`, {
-                    timeout: 4000
-                });
+        const semuaRequest = kelompokIsbn.map(kelompok => {
+            const parameterBibkeys = kelompok.map(isbn => `ISBN:${isbn}`).join(',');
+            return axios.get(`https://openlibrary.org/api/books?bibkeys=${parameterBibkeys}&format=json&jscmd=data`, {
+                timeout: 4000
             });
-
-            try {
-                const hasilResponses = await Promise.all(semuaRequest);
-                hasilResponses.forEach(response => {
-                    dataMerged = { ...dataMerged, ...response.data };
-                });
-            } catch (apiErr) {
-                console.warn("⚠️ Open Library API Timeout. Menggunakan data murni MySQL.");
-            }
-
-            const daftarBukuFinal = dbBooks.map((mysqlBook) => {
-                const bookData = dataMerged[`ISBN:${mysqlBook.isbn}`];
-
-                return {
-                    id: mysqlBook.id, 
-                    isbn: mysqlBook.isbn,
-                    title: mysqlBook.title || (bookData ? bookData.title : 'Unknown Title'),
-                    author: mysqlBook.author || (bookData && bookData.authors ? bookData.authors[0].name : 'Unknown Author'),
-                    category: mysqlBook.category || 'General',
-                    stock: mysqlBook.stock, 
-                    year: bookData ? (bookData.publish_date || 'Unknown') : 'Unknown',
-                    pages: bookData ? (bookData.number_of_pages || '-') : '-',
-                    cover_image: mysqlBook.cover_image || (bookData && bookData.cover ? bookData.cover.large : `https://covers.openlibrary.org/b/isbn/${mysqlBook.isbn}-L.jpg`)
-                };
-            });
-
-            res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-            res.setHeader('Pragma', 'no-cache');
-            res.setHeader('Expires', '0');
-
-            return res.json(daftarBukuFinal);
         });
 
-    } catch (error) {
-        console.error("⚠️ Sistem error:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
-    }
-});
-
-
-/*
-
-router.get("/", (req, res) => {
-    const queryStr = "SELECT * FROM books ORDER BY id DESC";
-
-    db.query(queryStr, (err, result) => {
-        if (err) {
-            console.error("Gagal mengambil katalog buku dari MySQL:", err);
-            return res.status(500).json({ message: "Internal Server Error", error: err.message });
+        try {
+            const hasilResponses = await Promise.all(semuaRequest);
+            hasilResponses.forEach(response => {
+                dataMerged = { ...dataMerged, ...response.data };
+            });
+        } catch (apiErr) {
+            console.warn("⚠️ Open Library API Timeout. Menggunakan data murni MySQL.");
         }
+
+        const daftarBukuFinal = dbBooks.map((mysqlBook) => {
+            const bookData = dataMerged[`ISBN:${mysqlBook.isbn}`];
+
+            return {
+                id: mysqlBook.id, 
+                isbn: mysqlBook.isbn,
+                title: mysqlBook.title || (bookData ? bookData.title : 'Unknown Title'),
+                author: mysqlBook.author || (bookData && bookData.authors ? bookData.authors[0].name : 'Unknown Author'),
+                category: mysqlBook.category || 'General',
+                stock: mysqlBook.stock, 
+                year: bookData ? (bookData.publish_date || 'Unknown') : 'Unknown',
+                pages: bookData ? (bookData.number_of_pages || '-') : '-',
+                cover_image: mysqlBook.cover_image || (bookData && bookData.cover ? bookData.cover.large : `https://covers.openlibrary.org/b/isbn/${mysqlBook.isbn}-L.jpg`)
+            };
+        });
 
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
         res.setHeader('Pragma', 'no-cache');
         res.setHeader('Expires', '0');
 
-        return res.status(200).json(result);
-    });
+        return res.json(daftarBukuFinal);
+
+    } catch (error) {
+        console.error("⚠️ Sistem error pada rute utama buku:", error);
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
 });
-*/
 
-
-
-router.get('/search', (req, res) => {
+router.get('/search', async (req, res) => {
     const kataKunci = req.query.q ? req.query.q.toLowerCase() : "";
 
     if (!kataKunci) return res.json([]);
 
-    const queryStr = "SELECT * FROM books WHERE LOWER(title) LIKE ? OR LOWER(author) LIKE ? OR LOWER(category) LIKE ?";
-    const values = [`%${kataKunci}%`, `%${kataKunci}%`, `%${kataKunci}%`];
+    try {
+        const queryStr = "SELECT * FROM books WHERE LOWER(title) LIKE ? OR LOWER(author) LIKE ? OR LOWER(category) LIKE ?";
+        const values = [`%${kataKunci}%`, `%${kataKunci}%`, `%${kataKunci}%`];
 
-    db.query(queryStr, values, (err, result) => {
-        if (err) return res.status(500).json(err);
+        const [result] = await db.query(queryStr, values);
         
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
         return res.status(200).json(result);
-    });
+    } catch (error) {
+        console.error("⚠️ Sistem error pada pencarian buku:", error);
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
 });
-
 
 router.get('/:isbn', async (req, res) => {
     const { isbn } = req.params; 
 
-    const queryStr = "SELECT * FROM books WHERE id = ? OR isbn = ?";
-    
-    db.query(queryStr, [isbn, isbn], async (err, dbResult) => {
-        if (!err && dbResult.length > 0) {
+    try {
+        const queryStr = "SELECT * FROM books WHERE id = ? OR isbn = ?";
+        
+        const [dbResult] = await db.query(queryStr, [isbn, isbn]);
+
+        if (dbResult.length > 0) {
             const mysqlBook = dbResult[0];
             const actualIsbn = mysqlBook.isbn;
 
@@ -302,7 +282,7 @@ router.get('/:isbn', async (req, res) => {
             }
         }
 
-        // Cadangan jika buku tidak terdaftar di MySQL
+        // Cadangan jika buku tidak terdaftar di MySQL (Mencari langsung ke Open Library)
         try {
             const response = await axios.get(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`, {
                 timeout: 3000
@@ -330,7 +310,11 @@ router.get('/:isbn', async (req, res) => {
         } catch (error) {
             return res.status(404).json({ message: "Buku tidak ditemukan di sistem online maupun lokal" });
         }
-    });
+
+    } catch (error) {
+        console.error("⚠️ Sistem error pada rute detail buku:", error);
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
 });
 
 module.exports = router;

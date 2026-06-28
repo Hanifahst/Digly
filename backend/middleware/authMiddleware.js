@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const db = require("../config/mysql"); 
 
-const verifyMember = (req, res, next) => {
+const verifyMember = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -16,29 +16,26 @@ const verifyMember = (req, res, next) => {
       return res.status(403).json({ message: "Akses ditolak, peran tidak dikenali!" });
     }
 
-    db.query("SELECT status FROM users WHERE id = ?", [verified.id], (err, results) => {
-      if (err) {
-        return res.status(500).json({ message: "Database Error saat memverifikasi status." });
-      }
+    // 📦 Menggunakan await untuk query ke MySQL Pool
+    const [results] = await db.query("SELECT status FROM users WHERE id = ?", [verified.id]);
       
-      if (results.length === 0) {
-        return res.status(404).json({ message: "Akun tidak ditemukan di sistem." });
-      }
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Akun tidak ditemukan di sistem." });
+    }
 
-      if (results[0].status === 'blocked') {
-        return res.status(403).json({ message: "Akses ditolak. Akun Anda telah diblokir oleh pihak perpustakaan!" });
-      }
+    if (results[0].status === 'blocked') {
+      return res.status(403).json({ message: "Akses ditolak. Akun Anda telah diblokir oleh pihak perpustakaan!" });
+    }
 
-      req.user = verified; 
-      next(); 
-    });
+    req.user = verified; 
+    next(); 
 
   } catch (err) {
     return res.status(400).json({ message: "Token tidak valid atau kadaluwarsa!" });
   }
 };
 
-const verifyAdmin = (req, res, next) => {
+const verifyAdmin = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -53,18 +50,15 @@ const verifyAdmin = (req, res, next) => {
       return res.status(403).json({ message: "Akses ditolak, area khusus Admin!" });
     }
 
-    db.query("SELECT status FROM users WHERE id = ?", [verified.id], (err, results) => {
-      if (err) {
-        return res.status(500).json({ message: "Database Error." });
-      }
+    // 📦 Menggunakan await untuk query ke MySQL Pool
+    const [results] = await db.query("SELECT status FROM users WHERE id = ?", [verified.id]);
       
-      if (results.length === 0 || results[0].status === 'blocked') {
-        return res.status(403).json({ message: "Akses ditolak. Sesi admin tidak aktif!" });
-      }
+    if (results.length === 0 || results[0].status === 'blocked') {
+      return res.status(403).json({ message: "Akses ditolak. Sesi admin tidak aktif!" });
+    }
 
-      req.user = verified; 
-      next(); 
-    });
+    req.user = verified; 
+    next(); 
 
   } catch (err) {
     return res.status(400).json({ message: "Token tidak valid atau kadaluwarsa!" });
