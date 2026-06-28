@@ -1,5 +1,5 @@
-// const mongoose = require("mongoose");
-/*
+ const mongoose = require("mongoose");
+
 const ActivityLogSchema = new mongoose.Schema({
   userId: Number,
   action: String,
@@ -15,4 +15,3 @@ module.exports = mongoose.model(
   ActivityLogSchema
 );
 
-*/
