@@ -45,11 +45,9 @@ export default function Dashboard() {
         Overview of Digly library system
       </p>
 
-      {/* 🔥 2. Grid diubah dari grid-cols-3 menjadi grid-cols-4 */}
       <div className="grid grid-cols-4 gap-6">
         <Card title="Total Books (Titles)" value={stats.totalBooks} loading={loading} />
         
-        {/* 🔥 3. Sisipkan kartu penunjuk total stok buku di database */}
         <Card title="Total Book Stock" value={`${stats.totalStock} Pcs`} loading={loading} />
         
         <Card title="Total Users" value={stats.totalUsers} loading={loading} />

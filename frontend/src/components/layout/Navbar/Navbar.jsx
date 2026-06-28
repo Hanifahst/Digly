@@ -33,7 +33,6 @@ function Navbar({ isLoggedIn }) {
             Books
           </Link>
 
-          {/* Hanya History yang dikunci untuk Member */}
           {isLoggedIn && (
             <Link
               to="/history"
@@ -43,7 +42,6 @@ function Navbar({ isLoggedIn }) {
             </Link>
           )}
 
-          {/* KEMBALI KE SEMULA: Tombol Profile dikeluarkan agar Guest bisa melihatnya */}
           <Link
             to="/profile"
             className={`transition hover:text-[#8B6F47] ${location.pathname === "/profile" ? "text-[#8B6F47] font-semibold" : ""}`}
@@ -52,7 +50,6 @@ function Navbar({ isLoggedIn }) {
           </Link>
         </div>
 
-        {/* TOMBOL SIGN IN / SPACER */}
         {!isLoggedIn ? (
           <Link
             to="/login"

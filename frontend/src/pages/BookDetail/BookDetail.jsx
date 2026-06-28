@@ -4,17 +4,15 @@ import axios from "axios";
 import Navbar from "../../components/layout/Navbar/Navbar";
 
 function BookDetail({ isLoggedIn }) {
-  const { id } = useParams(); // Ini berisi parameter dari URL (bisa berupa ISBN string atau ID)
+  const { id } = useParams(); 
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isBorrowing, setIsBorrowing] = useState(false);
   const [hasBorrowed, setHasBorrowed] = useState(false);
 
-  // Fungsi untuk memuat ulang detail buku (Dibuat terpisah agar bisa dipanggil kembali)
   const fetchBookDetail = async () => {
     try {
-      // Menggunakan id/isbn asli dari useParams agar konsisten
       const response = await axios.get(`http://localhost:5000/api/books/${id}?t=${Date.now()}`);
       setBook(response.data);
     } catch (err) {
@@ -40,7 +38,6 @@ function BookDetail({ isLoggedIn }) {
     try {
       const token = localStorage.getItem("digly_token");
       
-      // Mengirimkan ISBN yang murni dari URL/state buku untuk diolah oleh memberController baru kita
       const targetIsbn = book?.isbn || id;
 
       const response = await axios.post(
@@ -56,8 +53,7 @@ function BookDetail({ isLoggedIn }) {
       alert(response.data.message || "Buku berhasil dipinjam!");
       setHasBorrowed(true);
 
-      // Memanggil fungsi fetch ulang dari API dibanding hanya memotong state, 
-      // agar data di layar sinkron sempurna dengan database MySQL
+      
       await fetchBookDetail();
 
     } catch (err) {

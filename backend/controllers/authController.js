@@ -1,8 +1,7 @@
 const db = require("../config/mysql");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
- const ActivityLog = require("../models/ActivityLog"); 
+const ActivityLog = require("../models/ActivityLog"); 
 
 // register
 exports.register = async (req, res) => {
@@ -33,14 +32,14 @@ exports.register = async (req, res) => {
               return res.status(500).json(err);
             }
 
-            /*
-            await ActivityLog.create({
+            
+             await ActivityLog.create({
               userId: result.insertId,
               action: "REGISTER",
               description: `${name} berhasil melakukan register`,
             });
 
-            */
+        
 
             
 
@@ -106,11 +105,13 @@ exports.login = async (req, res) => {
         );
 
         // simpan log
-        /* await ActivityLog.create({
+        await ActivityLog.create({
           userId: user.id,
           action: "LOGIN",
           description: `${user.name} telah login`,
-        }); */
+        }); 
+
+        
 
         res.json({
           token,
@@ -133,13 +134,13 @@ exports.logout = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    /* await ActivityLog.create({
+    await ActivityLog.create({
       userId,
       action: "LOGOUT",
       description: "User telah logout",
     });
 
-    */
+    
 
     res.json({
       message: "Logout berhasil",

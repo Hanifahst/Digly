@@ -1,13 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react"; // 🛠️ Tambahkan useState dan useEffect
-import axios from "axios"; // 🛠️ Tambahkan axios
+import { useState, useEffect } from "react"; 
+import axios from "axios"; 
 import Navbar from "../../../components/layout/Navbar/Navbar";
 
 function Profile({ isLoggedIn, user, setIsLoggedIn, setUser }) {
   const navigate = useNavigate();
-  const [totalDipinjam, setTotalDipinjam] = useState(0); // 🛠️ State lokal untuk menghitung buku aktif
+  const [totalDipinjam, setTotalDipinjam] = useState(0); 
 
-  // 🛠️ Ambil data langsung dari MySQL via API History
   useEffect(() => {
     const fetchTotalBorrowed = async () => {
       const token = localStorage.getItem("digly_token");
@@ -17,7 +16,6 @@ function Profile({ isLoggedIn, user, setIsLoggedIn, setUser }) {
             headers: { Authorization: `Bearer ${token}` }
           });
           
-          // Hitung hanya transaksi yang statusnya masih aktif 'borrowed'
           const bukuAktif = response.data.filter(item => item.status === "borrowed");
           setTotalDipinjam(bukuAktif.length);
         } catch (err) {
@@ -30,7 +28,6 @@ function Profile({ isLoggedIn, user, setIsLoggedIn, setUser }) {
   }, [isLoggedIn]);
 
   const handleSignOut = () => {
-    // 🛠️ Amankan proses navigasi terlebih dahulu sebelum menghapus state agar tidak terjadi crash render
     navigate("/");
     
     setTimeout(() => {
@@ -101,7 +98,6 @@ function Profile({ isLoggedIn, user, setIsLoggedIn, setUser }) {
               <div className="mt-10 grid gap-6 md:grid-cols-2">
                 <div className="rounded-2xl bg-[#F8F5F0] p-6">
                   <p className="text-sm uppercase tracking-wider text-[#8B6F47]">Borrowed Books</p>
-                  {/* 🔥 Menggunakan angka realtime hasil hitung database */}
                   <h3 className="mt-2 text-4xl font-semibold text-[#3E2F26]">{totalDipinjam}</h3> 
                 </div>
                 <div className="rounded-2xl bg-[#F8F5F0] p-6">
