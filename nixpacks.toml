@@ -5,3 +5,6 @@ commands = ["cd backend && npm install"]
 
 [start]
 cmd = "cd backend && node server.js"
+
+[variables]
+NIXPACKS_NODE_VERSION = "20"

@@ -4,5 +4,8 @@
   "scripts": {
     "build": "cd backend && npm install",
     "start": "cd backend && node server.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
