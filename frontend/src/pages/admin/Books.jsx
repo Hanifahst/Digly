@@ -27,7 +27,7 @@ export default function Books() {
     try {
       setLoading(true);
       // Memakai anti-cache timestamp agar data selalu real-time saat dimutasi
-      const response = await axios.get(`http://localhost:5000/api/books?t=${Date.now()}`);
+      const response = await axios.get(`https://digly-project.sevalla.app/api/books?t=${Date.now()}`);
       setBooks(response.data);
     } catch (err) {
       console.error("Gagal mengambil data buku admin:", err);
@@ -70,11 +70,11 @@ export default function Books() {
 
       if (isEditing) {
         // Jalur PUT untuk Update Buku
-        await axios.put(`http://localhost:5000/api/admin/books/${selectedBookId}`, formData, { headers });
+        await axios.put(`https://digly-project.sevalla.app/api/admin/books/${selectedBookId}`, formData, { headers });
         alert("Buku berhasil diperbarui!");
       } else {
         // Jalur POST untuk Tambah Buku Baru
-        await axios.post("http://localhost:5000/api/admin/books", formData, { headers });
+        await axios.post("https://digly-project.sevalla.app/api/admin/books", formData, { headers });
         alert("Buku baru berhasil ditambahkan!");
       }
       
@@ -90,7 +90,7 @@ export default function Books() {
     if (window.confirm(`Apakah Anda yakin ingin menghapus buku "${title}" secara permanen dari database?`)) {
       try {
         const token = localStorage.getItem("digly_token");
-        await axios.delete(`http://localhost:5000/api/admin/books/${id}`, {
+        await axios.delete(`https://digly-project.sevalla.app/api/admin/books/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         alert("Buku sukses dihapus!");

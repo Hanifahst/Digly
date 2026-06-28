@@ -10,7 +10,7 @@ export default function Loans() {
     try {
       setLoading(true);
       const token = localStorage.getItem("digly_token");
-      const response = await axios.get("http://localhost:5000/api/admin/loans", {
+      const response = await axios.get("https://digly-project.sevalla.app/api/admin/loans", {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -32,7 +32,7 @@ export default function Loans() {
       try {
         const token = localStorage.getItem("digly_token");
         await axios.put(
-          `http://localhost:5000/api/admin/loans/return/${loanId}`,
+          `https://digly-project.sevalla.app/api/admin/loans/return/${loanId}`,
           { bookId }, 
           { headers: { Authorization: `Bearer ${token}` } }
         );

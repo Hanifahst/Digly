@@ -13,7 +13,7 @@ function BookDetail({ isLoggedIn }) {
 
   const fetchBookDetail = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/books/${id}?t=${Date.now()}`);
+      const response = await axios.get(`https://digly-project.sevalla.app/api/books/${id}?t=${Date.now()}`);
       setBook(response.data);
     } catch (err) {
       console.error("Gagal mengambil deskripsi:", err);
@@ -41,7 +41,7 @@ function BookDetail({ isLoggedIn }) {
       const targetIsbn = book?.isbn || id;
 
       const response = await axios.post(
-        "http://localhost:5000/api/member/borrow",
+        "https://digly-project.sevalla.app/api/member/borrow",
         { book_id: targetIsbn },
         {
           headers: {

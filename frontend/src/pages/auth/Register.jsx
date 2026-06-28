@@ -19,7 +19,7 @@ function Register() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/register", {
+      const response = await axios.post("https://digly-project.sevalla.app/api/auth/register", {
         name,
         email,
         password,

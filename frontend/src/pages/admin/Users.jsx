@@ -11,7 +11,7 @@ export default function Users() {
     try {
       setLoading(true);
       const token = localStorage.getItem("digly_token");
-      const response = await axios.get("http://localhost:5000/api/admin/users", {
+      const response = await axios.get("https://digly-project.sevalla.app/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(response.data);
@@ -32,7 +32,7 @@ export default function Users() {
       try {
         const token = localStorage.getItem("digly_token");
         await axios.put(
-          `http://localhost:5000/api/admin/users/status/${id}`, 
+          `https://digly-project.sevalla.app/api/admin/users/status/${id}`, 
           { currentStatus }, 
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -48,7 +48,7 @@ export default function Users() {
     if (window.confirm(`⚠️ PERINGATAN: Menghapus "${name}" akan menghapus seluruh data riwayatnya secara permanen. Lanjutkan?`)) {
       try {
         const token = localStorage.getItem("digly_token");
-        await axios.delete(`http://localhost:5000/api/admin/users/${id}`, {
+        await axios.delete(`https://digly-project.sevalla.app/api/admin/users/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         alert("User berhasil dihapus.");

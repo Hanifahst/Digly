@@ -12,7 +12,7 @@ function History({ isLoggedIn }) {
   const fetchHistory = async () => {
     try {
       const token = localStorage.getItem("digly_token");
-      const response = await axios.get("http://localhost:5000/api/member/history", {
+      const response = await axios.get("https://digly-project.sevalla.app/api/member/history", {
         headers: {
           Authorization: `Bearer ${token}`, 
         },
@@ -42,7 +42,7 @@ function History({ isLoggedIn }) {
     try {
       const token = localStorage.getItem("digly_token");
       const response = await axios.post(
-        "http://localhost:5000/api/member/return",
+        "https://digly-project.sevalla.app/api/member/return",
         { borrowing_id: borrowingId }, 
         {
           headers: {

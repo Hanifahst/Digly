@@ -16,7 +16,7 @@ export default function Dashboard() {
       try {
         const token = localStorage.getItem("digly_token");
         
-        const response = await axios.get("http://localhost:5000/api/admin/stats", {
+        const response = await axios.get("https://digly-project.sevalla.app/api/admin/stats", {
           headers: {
             Authorization: `Bearer ${token}`
           }

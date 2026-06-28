@@ -14,7 +14,7 @@ function Home({ isLoggedIn, user, setIsLoggedIn, setUser }) {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/books?t=${Date.now()}`);
+        const response = await axios.get(`https://digly-project.sevalla.app/api/books?t=${Date.now()}`);
         setBooks(response.data);
       } catch (error) {
         console.error("Gagal mengambil data buku:", error);

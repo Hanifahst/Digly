@@ -12,7 +12,7 @@ function Profile({ isLoggedIn, user, setIsLoggedIn, setUser }) {
       const token = localStorage.getItem("digly_token");
       if (isLoggedIn && token) {
         try {
-          const response = await axios.get("http://localhost:5000/api/member/history", {
+          const response = await axios.get("https://digly-project.sevalla.app/api/member/history", {
             headers: { Authorization: `Bearer ${token}` }
           });
           
