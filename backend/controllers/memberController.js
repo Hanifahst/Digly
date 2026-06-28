@@ -1,5 +1,5 @@
 const db = require("../config/mysql");
-const ActivityLog = require("../models/ActivityLog");
+// const ActivityLog = require("../models/ActivityLog");
 
 exports.getMyHistory = async (req, res) => {
     try {
