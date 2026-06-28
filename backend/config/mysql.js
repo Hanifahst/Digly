@@ -13,11 +13,12 @@ const pool = mysql.createPool({
 
 const db = pool.promise();
 
-db.connect((err) => {
+pool.getConnection((err, connection) => {
   if (err) {
     console.log(err);
   } else {
     console.log("MySQL Connected");
+    connection.release();
   }
 });
 
