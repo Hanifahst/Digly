@@ -44,6 +44,15 @@ export default function Loans() {
     }
   };
 
+  // Fungsi pembantu untuk memformat angka denda ke dalam Rupiah
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0
+    }).format(number || 0);
+  };
+
   return (
     <AdminLayout>
       <h1 className="text-5xl text-[#3E2F26] mb-2" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
@@ -52,10 +61,12 @@ export default function Loans() {
       <p className="text-[#6B5B4D] mb-6">Track borrowing activity</p>
 
       <div className="bg-[#FFFDF9] border border-[#E7DDD0] rounded-2xl p-6 shadow-sm">
-        <div className="grid grid-cols-4 font-semibold text-[#3E2F26] mb-4 pb-2 border-b border-[#E7DDD0]">
+        {/* Mengubah grid-cols-4 menjadi grid-cols-5 */}
+        <div className="grid grid-cols-5 font-semibold text-[#3E2F26] mb-4 pb-2 border-b border-[#E7DDD0]">
           <span>User</span>
           <span>Book Title</span>
           <span>Status</span>
+          <span>Fine / Denda</span>
           <span>Action</span>
         </div>
 
@@ -65,7 +76,8 @@ export default function Loans() {
           <div className="text-center py-6 text-[#6B5B4D]">Belum ada riwayat aktivitas peminjaman buku.</div>
         ) : (
           loans.map((loan) => (
-            <div key={loan.loan_id} className="grid grid-cols-4 py-3 text-[#6B5B4D] border-t border-[#F2EBE1] items-center">
+            /* Mengubah kelas pembungkus data dari grid-cols-4 menjadi grid-cols-5 */
+            <div key={loan.loan_id} className="grid grid-cols-5 py-3 text-[#6B5B4D] border-t border-[#F2EBE1] items-center">
               <span className="font-medium text-[#3E2F26]">{loan.user_name}</span>
               <span className="italic">"{loan.book_title}"</span>
               
@@ -73,6 +85,11 @@ export default function Loans() {
                 <span className={`px-3 py-1 rounded-full text-xs font-semibold ${loan.status === "borrowed" ? "bg-amber-100 text-amber-800" : "bg-gray-100 text-gray-600"}`}>
                   {loan.status === "borrowed" ? "Borrowed" : "Returned"}
                 </span>
+              </span>
+
+              {/* Kolom Baru: Menampilkan Denda */}
+              <span className={`font-medium ${loan.fine > 0 ? "text-red-600 font-semibold" : "text-gray-500"}`}>
+                {formatRupiah(loan.fine)}
               </span>
 
               <div>

@@ -146,6 +146,7 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
+
 exports.getAllLoans = async (req, res) => {
     try {
         const queryStr = `
@@ -155,8 +156,10 @@ exports.getAllLoans = async (req, res) => {
                 bk.title AS book_title,
                 bk.id AS book_id,
                 b.borrow_date,
+                b.due_date,
                 b.return_date,
-                b.status
+                b.status,
+                b.fine
             FROM borrowings b
             JOIN users u ON b.user_id = u.id
             JOIN books bk ON b.book_id = bk.id
@@ -164,7 +167,29 @@ exports.getAllLoans = async (req, res) => {
         `;
 
         const [results] = await db.query(queryStr);
-        return res.status(200).json(results);
+        const FINE_PER_DAY = 2000; 
+
+        const integratedResults = results.map((loan) => {
+            let computedFine = loan.fine || 0;
+
+            if (loan.status === 'borrowed' && loan.due_date) {
+                const today = new Date();
+                const dueDate = new Date(loan.due_date);
+
+                if (today > dueDate) {
+                    const timeDiff = today.getTime() - dueDate.getTime();
+                    const daysLate = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    computedFine = daysLate * FINE_PER_DAY;
+                }
+            }
+
+            return {
+                ...loan,
+                fine: computedFine
+            };
+        });
+
+        return res.status(200).json(integratedResults);
     } catch (err) {
         console.error("Gagal mengambil data peminjaman:", err);
         return res.status(500).json({ message: "Database Error saat memuat data transaksi.", error: err.message });
@@ -174,14 +199,33 @@ exports.getAllLoans = async (req, res) => {
 exports.returnBook = async (req, res) => {
     const { id } = req.params; 
     const { bookId } = req.body; 
+    const FINE_PER_DAY = 2000;
 
     try {
-        const updateLoanQuery = "UPDATE borrowings SET status = 'returned', return_date = NOW() WHERE id = ?";
-        const [result] = await db.query(updateLoanQuery, [id]);
+        const checkQuery = "SELECT due_date, status FROM borrowings WHERE id = ?";
+        const [[loan]] = await db.query(checkQuery, [id]);
 
-        if (result.affectedRows === 0) {
+        if (!loan) {
             return res.status(404).json({ message: "Data peminjaman tidak ditemukan." });
         }
+
+        if (loan.status === 'returned') {
+            return res.status(400).json({ message: "Buku ini sudah dikembalikan sebelumnya." });
+        }
+
+        let finalFine = 0;
+        if (loan.due_date) {
+            const today = new Date();
+            const dueDate = new Date(loan.due_date);
+            if (today > dueDate) {
+                const timeDiff = today.getTime() - dueDate.getTime();
+                const daysLate = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                finalFine = daysLate * FINE_PER_DAY;
+            }
+        }
+
+        const updateLoanQuery = "UPDATE borrowings SET status = 'returned', return_date = NOW(), fine = ? WHERE id = ?";
+        await db.query(updateLoanQuery, [finalFine, id]);
 
         const updateStockQuery = "UPDATE books SET stock = stock + 1 WHERE id = ?";
         await db.query(updateStockQuery, [bookId]);
