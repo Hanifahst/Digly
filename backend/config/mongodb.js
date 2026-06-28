@@ -1,4 +1,4 @@
- /* const mongoose = require("mongoose");
+ const mongoose = require("mongoose");
 
 const connectMongo = async () => {
   try {
@@ -14,4 +14,3 @@ connectMongo();
 
 module.exports = mongoose;
 
-*/
